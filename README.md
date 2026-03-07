@@ -78,23 +78,6 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-
-### 4.1) (Optional) Enable OpenAI-powered agent responses
-
-If you want Research/Coding/Travel agents to use OpenAI instead of only local fallback logic, set:
-
-```bash
-export OPENAI_API_KEY="your_openai_api_key"
-export OPENAI_MODEL="gpt-4o-mini"  # optional
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:OPENAI_API_KEY="your_openai_api_key"
-$env:OPENAI_MODEL="gpt-4o-mini"
-```
-
 ### 5) Start backend server
 
 ```bash
@@ -103,18 +86,15 @@ uvicorn backend.app.main:app --reload
 
 ### 6) Open the app in browser
 
-Use one of these URLs:
+Go to:
 
 ```text
-http://127.0.0.1:8000/      # main chatbot UI
-http://127.0.0.1:8000/chat  # chatbot alias
+http://127.0.0.1:8000
 ```
-
-> If you open `http://127.0.0.1:8000/health`, you will see JSON health output only (service status), not the chat UI.
 
 ### 7) Test the API quickly (optional)
 
-Health check (returns JSON status + helpful links):
+Health check:
 
 ```bash
 curl http://127.0.0.1:8000/health

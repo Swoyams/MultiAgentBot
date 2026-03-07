@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Any, Dict
 from uuid import uuid4
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -42,15 +42,8 @@ class ChatResponse(BaseModel):
 
 
 @app.get("/health")
-def health(request: Request) -> dict[str, str]:
-    base = str(request.base_url).rstrip("/")
-    return {
-        "status": "ok",
-        "message": "Service is healthy. Open the chatbot UI at '/' or '/chat'.",
-        "ui_url": f"{base}/",
-        "chat_alias_url": f"{base}/chat",
-        "api_docs_url": f"{base}/docs",
-    }
+def health() -> dict[str, str]:
+    return {"status": "ok"}
 
 
 @app.get("/")
@@ -59,11 +52,6 @@ def index():
     if index_file.exists():
         return FileResponse(index_file)
     return {"message": "Frontend not found"}
-
-
-@app.get("/chat")
-def chat_page():
-    return index()
 
 
 @app.post("/api/chat", response_model=ChatResponse)

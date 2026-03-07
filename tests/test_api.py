@@ -7,15 +7,7 @@ def test_health():
     client = TestClient(app)
     response = client.get('/health')
     assert response.status_code == 200
-    payload = response.json()
-    assert payload['status'] == 'ok'
-    assert '/' in payload['ui_url']
-
-
-def test_chat_alias_route_exists():
-    client = TestClient(app)
-    response = client.get('/chat')
-    assert response.status_code == 200
+    assert response.json()['status'] == 'ok'
 
 
 def test_chat_workflow_returns_agents():
