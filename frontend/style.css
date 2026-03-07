@@ -1,0 +1,49 @@
+:root { color-scheme: dark; }
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+.app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+}
+.subtitle { color: #94a3b8; }
+.chat {
+  border: 1px solid #334155;
+  border-radius: 12px;
+  min-height: 50vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  background: #111827;
+}
+.msg {
+  padding: 10px 12px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+}
+.user { background: #1d4ed8; align-self: flex-end; max-width: 80%; }
+.bot { background: #1f2937; align-self: flex-start; max-width: 90%; }
+.composer { display: flex; gap: 8px; }
+textarea {
+  flex: 1;
+  min-height: 70px;
+  border-radius: 8px;
+  border: 1px solid #475569;
+  background: #020617;
+  color: #e2e8f0;
+  padding: 10px;
+}
+button {
+  border: none;
+  border-radius: 8px;
+  background: #22c55e;
+  color: #0f172a;
+  padding: 0 20px;
+  font-weight: 700;
+}
