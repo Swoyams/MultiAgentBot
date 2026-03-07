@@ -78,23 +78,6 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-
-### 4.1) (Optional) Enable OpenAI-powered agent responses
-
-If you want Research/Coding/Travel agents to use OpenAI instead of only local fallback logic, set:
-
-```bash
-export OPENAI_API_KEY="your_openai_api_key"
-export OPENAI_MODEL="gpt-4o-mini"  # optional
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:OPENAI_API_KEY="your_openai_api_key"
-$env:OPENAI_MODEL="gpt-4o-mini"
-```
-
 ### 5) Start backend server
 
 ```bash

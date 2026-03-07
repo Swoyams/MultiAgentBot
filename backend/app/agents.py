@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import math
-import os
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import requests
 
@@ -13,41 +12,6 @@ from .state import AgentName, ChatState
 def _append_trace(state: ChatState, message: str) -> None:
     trace = state.setdefault("trace", [])
     trace.append(message)
-
-
-def _openai_chat(system_prompt: str, user_prompt: str) -> Optional[str]:
-    """Call OpenAI Responses API if OPENAI_API_KEY is available.
-
-    Returns generated text on success, otherwise None so nodes can fallback.
-    """
-    api_key = os.getenv("OPENAI_API_KEY")
-    if not api_key:
-        return None
-
-    try:
-        response = requests.post(
-            "https://api.openai.com/v1/responses",
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json",
-            },
-            json={
-                "model": os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
-                "input": [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_prompt},
-                ],
-                "temperature": 0.2,
-            },
-            timeout=20,
-        )
-        if not response.ok:
-            return None
-
-        payload = response.json()
-        return payload.get("output_text")
-    except requests.RequestException:
-        return None
 
 
 def preprocess_node(state: ChatState) -> ChatState:
@@ -95,6 +59,7 @@ def supervisor_agent_node(state: ChatState) -> ChatState:
         queue.append("budget")
 
     if not queue:
+        # default path mimics a general AI assistant by routing to research + coding synthesis
         queue = ["research", "coding"]
 
     state["intent"] = ",".join(queue)
@@ -113,26 +78,18 @@ def dispatcher_node(state: ChatState) -> ChatState:
 
 def research_agent_node(state: ChatState) -> ChatState:
     query = state.get("user_message", "")
-
-    llm_output = _openai_chat(
-        "You are the Research Agent. Give concise factual context, include caveats when uncertain.",
-        query,
-    )
-    if llm_output:
-        output = llm_output
-    else:
-        output = "I could not find online context right now."
-        try:
-            response = requests.get(
-                "https://en.wikipedia.org/api/rest_v1/page/summary/" + requests.utils.quote(query[:80]),
-                timeout=5,
-                headers={"User-Agent": "MultiAgentBot/1.0"},
-            )
-            if response.ok:
-                data = response.json()
-                output = data.get("extract", output)
-        except requests.RequestException:
-            output = "Internet lookup was unavailable, so I used internal reasoning only."
+    output = "I could not find online context right now."
+    try:
+        response = requests.get(
+            "https://en.wikipedia.org/api/rest_v1/page/summary/" + requests.utils.quote(query[:80]),
+            timeout=5,
+            headers={"User-Agent": "MultiAgentBot/1.0"},
+        )
+        if response.ok:
+            data = response.json()
+            output = data.get("extract", output)
+    except requests.RequestException:
+        output = "Internet lookup was unavailable, so I used internal reasoning only."
 
     state.setdefault("collected_outputs", []).append({"agent": "research", "content": output})
     _append_trace(state, "research_agent_node")
@@ -142,27 +99,18 @@ def research_agent_node(state: ChatState) -> ChatState:
 def coding_agent_node(state: ChatState) -> ChatState:
     language = state.get("memory", {}).get("coding_language", "python")
     prompt = state.get("user_message", "")
-
-    llm_output = _openai_chat(
-        f"You are the Coding Agent. Produce practical {language} guidance and a minimal working snippet.",
-        prompt,
+    content = (
+        f"Developer Agent ({language}) suggests: break the task into modules, add input validation, "
+        f"write tests, and document APIs.\n\nStarter snippet:\n"
     )
-    if llm_output:
-        content = llm_output
+    if language == "python":
+        content += "def solve(user_input: str) -> str:\n    return user_input.strip()\n"
+    elif language in {"javascript", "typescript"}:
+        content += "function solve(userInput) { return userInput.trim(); }\n"
     else:
-        content = (
-            f"Developer Agent ({language}) suggests: break the task into modules, add input validation, "
-            f"write tests, and document APIs.\n\nStarter snippet:\n"
-        )
-        if language == "python":
-            content += "def solve(user_input: str) -> str:\n    return user_input.strip()\n"
-        elif language in {"javascript", "typescript"}:
-            content += "function solve(userInput) { return userInput.trim(); }\n"
-        else:
-            content += f"// Build a minimal reusable function in {language}.\n"
+        content += f"// Build a minimal reusable function in {language}.\n"
 
-        content += f"\nTask context: {prompt[:200]}"
-
+    content += f"\nTask context: {prompt[:200]}"
     state.setdefault("collected_outputs", []).append({"agent": "coding", "content": content})
     _append_trace(state, "coding_agent_node")
     return state
@@ -174,22 +122,13 @@ def travel_planner_agent_node(state: ChatState) -> ChatState:
     interests = ", ".join(memory.get("interests", ["local highlights"]))
     budget = memory.get("budget_range", "flexible")
 
-    prompt = (
-        f"Create a 3-day itinerary for {destination}. Interests: {interests}. "
-        f"Budget preference: {budget}. Keep output practical and concise."
+    plan = (
+        f"3-day itinerary for {destination}:\n"
+        f"Day 1: Arrival + city orientation around {interests}.\n"
+        f"Day 2: Signature attractions + food tour.\n"
+        f"Day 3: Free exploration + departure.\n"
+        f"Target budget profile: {budget}."
     )
-    llm_output = _openai_chat("You are the Travel Planner Agent.", prompt)
-    if llm_output:
-        plan = llm_output
-    else:
-        plan = (
-            f"3-day itinerary for {destination}:\n"
-            f"Day 1: Arrival + city orientation around {interests}.\n"
-            f"Day 2: Signature attractions + food tour.\n"
-            f"Day 3: Free exploration + departure.\n"
-            f"Target budget profile: {budget}."
-        )
-
     state.setdefault("collected_outputs", []).append({"agent": "travel", "content": plan})
     _append_trace(state, "travel_planner_agent_node")
     return state
