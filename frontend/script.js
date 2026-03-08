@@ -21,7 +21,7 @@ form.addEventListener('submit', async (event) => {
 
   const loading = document.createElement('div');
   loading.className = 'msg bot';
-  loading.textContent = 'Thinking with agents...';
+  loading.textContent = 'Thinking...';
   chat.appendChild(loading);
 
   try {
@@ -32,7 +32,7 @@ form.addEventListener('submit', async (event) => {
     });
     const data = await res.json();
     sessionId = data.session_id;
-    loading.textContent = `${data.answer}\n\nTrace: ${data.trace.join(' -> ')}`;
+    loading.textContent = data.answer;
   } catch (err) {
     loading.textContent = `Error: ${err.message}`;
   }

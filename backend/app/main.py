@@ -38,7 +38,7 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     session_id: str
     answer: str
-    trace: list[str]
+    structured_output: Dict[str, Any]
 
 
 @app.get("/health")
@@ -58,6 +58,7 @@ def index():
 def chat(req: ChatRequest) -> ChatResponse:
     session_id = req.session_id or str(uuid4())
     persisted_memory = memory_store.get(session_id, {})
+    persisted_memory.setdefault("chat_history", [])
 
     state = {
         "session_id": session_id,
@@ -68,10 +69,19 @@ def chat(req: ChatRequest) -> ChatResponse:
     }
 
     result = workflow.invoke(state)
-    memory_store[session_id] = result.get("memory", {})
+    updated_memory = result.get("memory", {})
+    history = updated_memory.setdefault("chat_history", [])
+    history.append(
+        {
+            "user": req.message,
+            "assistant": result.get("final_answer", "No answer generated."),
+        }
+    )
+    updated_memory["chat_history"] = history[-12:]
+    memory_store[session_id] = updated_memory
 
     return ChatResponse(
         session_id=session_id,
         answer=result.get("final_answer", "No answer generated."),
-        trace=result.get("trace", []),
+        structured_output=result.get("structured_output", {"mode": "fallback", "sections": []}),
     )

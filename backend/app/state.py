@@ -22,6 +22,7 @@ class ChatState(TypedDict, total=False):
     memory: Dict[str, Any]
     collected_outputs: List[Dict[str, str]]
     final_answer: str
+    structured_output: Dict[str, Any]
     critic_feedback: str
     needs_regeneration: bool
     trace: List[str]
