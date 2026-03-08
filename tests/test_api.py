@@ -42,15 +42,3 @@ def test_chat_memory_recall_uses_previous_turns():
     data = recall.json()
     assert data['structured_output']['mode'] == 'memory'
     assert 'rome' in data['answer'].lower()
-
-
-def test_general_fact_question_does_not_return_code_or_practices():
-    client = TestClient(app)
-    response = client.post('/api/chat', json={'message': 'What is the capital of India?'})
-    assert response.status_code == 200
-    data = response.json()
-    answer = data['answer'].lower()
-    assert '```' not in data['answer']
-    assert 'function definition' not in answer
-    assert 'best practices' not in answer
-    assert 'if __name__ ==' not in answer

@@ -37,52 +37,6 @@ def _is_memory_recall_query(text: str) -> bool:
     return any(marker in text for marker in recall_markers)
 
 
-def _wants_detailed_output(text: str) -> bool:
-    detail_markers = [
-        "show code",
-        "full code",
-        "code snippet",
-        "explain",
-        "detailed",
-        "step by step",
-        "with trace",
-        "debug details",
-    ]
-    return any(marker in text for marker in detail_markers)
-
-
-def _has_coding_intent(text: str) -> bool:
-    coding_markers = ["code", "python", "javascript", "typescript", "java", "bug", "function", "implement", "algorithm"]
-    return any(marker in text for marker in coding_markers)
-
-
-def _has_travel_intent(text: str) -> bool:
-    travel_markers = ["travel", "trip", "itinerary", "flight", "hotel", "vacation"]
-    return any(marker in text for marker in travel_markers)
-
-
-def _has_budget_intent(text: str) -> bool:
-    budget_markers = ["budget", "cost", "convert", "currency", "optimize", "price", "split"]
-    return any(marker in text for marker in budget_markers)
-
-
-def _force_safe_routing(text: str, queue: List[AgentName]) -> List[AgentName]:
-    safe_queue: List[AgentName] = []
-    if "research" in queue:
-        safe_queue.append("research")
-    if "coding" in queue and _has_coding_intent(text):
-        safe_queue.append("coding")
-    if "travel" in queue and _has_travel_intent(text):
-        safe_queue.append("travel")
-    if "budget" in queue and _has_budget_intent(text):
-        safe_queue.append("budget")
-    return safe_queue or ["research"]
-
-
-def _strip_code_blocks(text: str) -> str:
-    return re.sub(r"```[\s\S]*?```", "", text).strip()
-
-
 def _build_memory_recall_answer(memory: Dict[str, Any]) -> str:
     history = memory.get("chat_history", [])
     if not history:
@@ -250,17 +204,10 @@ def coding_agent_node(state: ChatState) -> ChatState:
     language = state.get("memory", {}).get("coding_language", "python")
     prompt = state.get("user_message", "")
     history_context = _recent_chat_history(state.get("memory", {}))
-    detailed = _wants_detailed_output(state.get("normalized_message", ""))
-    coding_system_prompt = (
-        "You are a senior software engineer. Return: approach, code, and test cases."
-        if detailed
-        else "You are a senior software engineer. Provide a concise solution summary only. "
-        "Do not include code blocks, long explanations, or examples unless explicitly requested."
-    )
     content = _invoke_llm(
-        coding_system_prompt,
+        "You are a senior software engineer. Return: approach, code, and test cases.",
         f"Language: {language}\nTask: {prompt}\n\nRecent chat history:\n{history_context}",
-        "I can help solve this coding task. If you want full code and explanation, ask: 'show code with steps'.",
+        "I can provide coding help. Please clarify language, requirements, and input/output format.",
     )
     state.setdefault("collected_outputs", []).append({"agent": "coding", "content": content})
     _append_trace(state, "coding_agent_node")
@@ -375,24 +322,13 @@ def formatter_node(state: ChatState) -> ChatState:
 
     synthesis_input = "\n\n".join(f"[{item['agent']}]\n{item['content']}" for item in visible_outputs)
     fallback = "\n\n".join(item["content"].strip() for item in visible_outputs if item.get("content"))
-    detailed = _wants_detailed_output(state.get("normalized_message", ""))
-
-    formatter_prompt = (
-        "You are the final response formatter. Create a clean, user-facing answer only. "
-        "Do not mention internal agents, routing, chain-of-thought, or hidden processing."
-        if detailed
-        else "You are the final response formatter. Create a short, clean final answer only. "
-        "Do not include code blocks, internal traces, technical internals, or long explanations unless explicitly requested by the user."
-    )
 
     clean_answer = _invoke_llm(
-        formatter_prompt,
+        "You are the final response formatter. Create a clean, user-facing answer only. "
+        "Do not mention internal agents, routing, chain-of-thought, or hidden processing.",
         synthesis_input,
         fallback,
     )
-
-    if not detailed:
-        clean_answer = _strip_code_blocks(clean_answer)
 
     state["final_answer"] = clean_answer
     state["structured_output"] = {
