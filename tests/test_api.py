@@ -16,5 +16,14 @@ def test_chat_workflow_returns_agents():
     assert response.status_code == 200
     data = response.json()
     assert 'session_id' in data
-    assert 'Travel Agent' in data['answer'] or 'Travel Planner' in data['answer']
+    assert '3-day itinerary for Paris' in data['answer']
     assert len(data['trace']) >= 4
+
+
+def test_chat_research_only_does_not_include_coding_output():
+    client = TestClient(app)
+    response = client.post('/api/chat', json={'message': 'What is machine learning?'})
+    assert response.status_code == 200
+    data = response.json()
+    assert 'Developer Agent' not in data['answer']
+    assert 'Starter snippet' not in data['answer']
