@@ -37,20 +37,6 @@ def _is_memory_recall_query(text: str) -> bool:
     return any(marker in text for marker in recall_markers)
 
 
-def _wants_detailed_output(text: str) -> bool:
-    detail_markers = [
-        "show code",
-        "full code",
-        "code snippet",
-        "explain",
-        "detailed",
-        "step by step",
-        "with trace",
-        "debug details",
-    ]
-    return any(marker in text for marker in detail_markers)
-
-
 def _build_memory_recall_answer(memory: Dict[str, Any]) -> str:
     history = memory.get("chat_history", [])
     if not history:
@@ -216,17 +202,10 @@ def coding_agent_node(state: ChatState) -> ChatState:
     language = state.get("memory", {}).get("coding_language", "python")
     prompt = state.get("user_message", "")
     history_context = _recent_chat_history(state.get("memory", {}))
-    detailed = _wants_detailed_output(state.get("normalized_message", ""))
-    coding_system_prompt = (
-        "You are a senior software engineer. Return: approach, code, and test cases."
-        if detailed
-        else "You are a senior software engineer. Provide a concise solution summary only. "
-        "Do not include code blocks, long explanations, or examples unless explicitly requested."
-    )
     content = _invoke_llm(
-        coding_system_prompt,
+        "You are a senior software engineer. Return: approach, code, and test cases.",
         f"Language: {language}\nTask: {prompt}\n\nRecent chat history:\n{history_context}",
-        "I can help solve this coding task. If you want full code and explanation, ask: 'show code with steps'.",
+        "I can provide coding help. Please clarify language, requirements, and input/output format.",
     )
     state.setdefault("collected_outputs", []).append({"agent": "coding", "content": content})
     _append_trace(state, "coding_agent_node")
@@ -341,18 +320,10 @@ def formatter_node(state: ChatState) -> ChatState:
 
     synthesis_input = "\n\n".join(f"[{item['agent']}]\n{item['content']}" for item in visible_outputs)
     fallback = "\n\n".join(item["content"].strip() for item in visible_outputs if item.get("content"))
-    detailed = _wants_detailed_output(state.get("normalized_message", ""))
-
-    formatter_prompt = (
-        "You are the final response formatter. Create a clean, user-facing answer only. "
-        "Do not mention internal agents, routing, chain-of-thought, or hidden processing."
-        if detailed
-        else "You are the final response formatter. Create a short, clean final answer only. "
-        "Do not include code blocks, internal traces, technical internals, or long explanations unless explicitly requested by the user."
-    )
 
     clean_answer = _invoke_llm(
-        formatter_prompt,
+        "You are the final response formatter. Create a clean, user-facing answer only. "
+        "Do not mention internal agents, routing, chain-of-thought, or hidden processing.",
         synthesis_input,
         fallback,
     )
