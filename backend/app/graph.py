@@ -23,7 +23,7 @@ def build_graph():
     graph = StateGraph(ChatState)
 
     graph.add_node("preprocess", preprocess_node)
-    graph.add_node("memory", memory_agent_node)
+    graph.add_node("memory_agent", memory_agent_node)
     graph.add_node("supervisor", supervisor_agent_node)
     graph.add_node("dispatch", dispatcher_node)
 
@@ -37,8 +37,8 @@ def build_graph():
 
     graph.set_entry_point("preprocess")
 
-    graph.add_edge("preprocess", "memory")
-    graph.add_edge("memory", "supervisor")
+    graph.add_edge("preprocess", "memory_agent")
+    graph.add_edge("memory_agent", "supervisor")
     graph.add_edge("supervisor", "dispatch")
 
     graph.add_conditional_edges(
