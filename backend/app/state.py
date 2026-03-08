@@ -17,6 +17,7 @@ class ChatState(TypedDict, total=False):
     normalized_message: str
     intent: str
     task_queue: List[AgentName]
+    requested_agents: List[AgentName]
     active_agent: Optional[AgentName]
     memory: Dict[str, Any]
     collected_outputs: List[Dict[str, str]]

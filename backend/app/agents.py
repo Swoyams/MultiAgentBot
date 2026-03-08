@@ -59,10 +59,11 @@ def supervisor_agent_node(state: ChatState) -> ChatState:
         queue.append("budget")
 
     if not queue:
-        # default path mimics a general AI assistant by routing to research + coding synthesis
-        queue = ["research", "coding"]
+        # Default to a single general-purpose path to avoid redundant multi-agent responses.
+        queue = ["research"]
 
     state["intent"] = ",".join(queue)
+    state["requested_agents"] = queue.copy()
     state["task_queue"] = queue
     _append_trace(state, f"supervisor_agent_node -> {queue}")
     return state
@@ -187,20 +188,47 @@ def critic_validator_agent_node(state: ChatState) -> ChatState:
 
 
 def formatter_node(state: ChatState) -> ChatState:
-    sections = [f"### {item['agent'].title()} Agent\n{item['content']}" for item in state.get("collected_outputs", [])]
-    critique = state.get("critic_feedback", "Validation passed.")
-    memory = state.get("memory", {})
-    memory_lines = "\n".join(f"- {k}: {v}" for k, v in memory.items()) or "- No preferences stored yet."
+    outputs = state.get("collected_outputs", [])
+    user_message = state.get("user_message", "")
+    requested_agents = state.get("requested_agents", [])
 
-    state["final_answer"] = (
-        "\n\n".join(sections)
-        + "\n\n### Memory Snapshot\n"
-        + memory_lines
-        + "\n\n### Critic Review\n"
-        + critique
-    )
+    # If we have collected outputs, synthesize them into a coherent answer
+    if outputs:
+        # Extract the most relevant content from requested agents only
+        answer_parts = []
+
+        for item in outputs:
+            agent = item.get("agent")
+            if requested_agents and agent not in requested_agents:
+                continue
+
+            content = item.get("content", "").strip()
+            if content:
+                answer_parts.append(content)
+
+        # Combine relevant agent outputs into a cohesive response
+        if answer_parts:
+            state["final_answer"] = "\n\n".join(answer_parts)
+        else:
+            state["final_answer"] = _generate_fallback_answer(user_message)
+    else:
+        # No agent outputs - provide a simple fallback
+        state["final_answer"] = _generate_fallback_answer(user_message)
+
     _append_trace(state, "formatter_node")
     return state
+
+
+def _generate_fallback_answer(question: str) -> str:
+    q_lower = question.lower().strip()
+
+    if any(greeting in q_lower for greeting in ["hello", "hi", "hey"]):
+        return "Hello! I can help with research, coding, travel, and budget planning."
+
+    return (
+        "I could not find a strong direct result for that request yet. "
+        "Please add a little more detail so I can route to the right agent."
+    )
 
 
 def route_agent(state: ChatState) -> str:
