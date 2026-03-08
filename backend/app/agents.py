@@ -156,6 +156,8 @@ def supervisor_agent_node(state: ChatState) -> ChatState:
     if mode == "general_search_only":
         queue = ["research"]
 
+    queue = _force_safe_routing(text, queue)
+
     state["intent"] = ",".join(queue)
     state["requested_agents"] = queue.copy()
     state["task_queue"] = queue
