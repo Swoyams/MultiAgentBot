@@ -77,14 +77,20 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+### 5)Configure environment variables
 
-### 5) Start backend server
+Create a .env file in the root directory and add your OpenAI API key and the GPT-4.0 model name:
+
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL="gpt-4o-mini"
+
+### 6) Start backend server
 
 ```bash
 uvicorn backend.app.main:app --reload
 ```
 
-### 6) Open the app in browser
+### 7) Open the app in browser
 
 Go to:
 
@@ -92,7 +98,7 @@ Go to:
 http://127.0.0.1:8000
 ```
 
-### 7) Test the API quickly (optional)
+### 8) Test the API quickly (optional)
 
 Health check:
 
