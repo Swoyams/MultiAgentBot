@@ -25,4 +25,10 @@ class ChatState(TypedDict, total=False):
     final_answer: str
     critic_feedback: str
     needs_regeneration: bool
+
+ 
+    retry_count: int         
+    max_retries: int          
+    failed_agents: List[str]  
+
     trace: List[str]

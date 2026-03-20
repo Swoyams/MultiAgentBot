@@ -442,6 +442,17 @@
     .trace-pill.t-default   { background: rgba(88,166,255,0.07); color: var(--text-secondary); border: 1px solid var(--border); }
     .trace-pill::before { content: '●'; font-size: 6px; }
 
+    .trace-timing {
+      margin-left: 5px;
+      font-size: 9px;
+      font-weight: 700;
+      opacity: 0.7;
+      background: rgba(0,0,0,0.25);
+      padding: 1px 4px;
+      border-radius: 4px;
+      letter-spacing: 0.02em;
+    }
+
     .trace-toggle {
       background: none;
       border: none;
@@ -659,6 +670,406 @@
       display: block;
     }
 
+    /* ── Markdown rendered content ───────────────────────── */
+    .msg-text h1, .msg-text h2, .msg-text h3,
+    .msg-text h4, .msg-text h5 {
+      color: var(--text-primary);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin: 18px 0 8px;
+      line-height: 1.3;
+    }
+    .msg-text h1 { font-size: 17px; border-bottom: 1px solid var(--border-soft); padding-bottom: 6px; }
+    .msg-text h2 { font-size: 15px; color: var(--blue-bright); }
+    .msg-text h3 {
+      font-size: 13px;
+      color: var(--text-primary);
+      background: linear-gradient(90deg, rgba(47,129,247,0.12), transparent);
+      border-left: 3px solid var(--blue-primary);
+      padding: 6px 10px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0 8px;
+    }
+    .msg-text h4 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .msg-text ul {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .msg-text ul li {
+      padding: 7px 12px 7px 30px;
+      border-radius: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-soft);
+      font-size: 13.5px;
+      line-height: 1.6;
+      position: relative;
+    }
+    .msg-text ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 10px;
+      color: var(--blue-primary);
+      font-size: 11px;
+      top: 8px;
+    }
+
+    .msg-text p {
+      margin: 6px 0;
+      line-height: 1.75;
+    }
+
+    .msg-text hr {
+      border: none;
+      border-top: 1px solid var(--border-soft);
+      margin: 14px 0;
+    }
+
+    /* ── LangSmith run link ──────────────────────────────── */
+    .langsmith-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--border-soft);
+      background: transparent;
+      transition: color var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .langsmith-link:hover {
+      color: var(--blue-bright);
+      border-color: rgba(88,166,255,0.3);
+      background: rgba(88,166,255,0.06);
+    }
+    .langsmith-link .ls-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #3fb950;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════════════
+       ITINERARY CARD SYSTEM — full redesign
+    ══════════════════════════════════════════════ */
+    .itinerary-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 8px 0;
+      font-family: var(--font-sans);
+      max-width: 480px;
+    }
+
+    /* ── Hero header ─────────────────────────────── */
+    .itin-header {
+      border-radius: 12px;
+      padding: 16px 18px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f2f5a 0%, #0a1f3c 50%, #071529 100%);
+      border: 1px solid rgba(88,166,255,0.25);
+    }
+    .itin-header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 90% 20%, rgba(88,166,255,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(165,140,255,0.08) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .itin-header-icon {
+      font-size: 26px;
+      line-height: 1;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 12px rgba(88,166,255,0.5));
+      z-index: 1;
+    }
+
+    .itin-header-body { flex: 1; z-index: 1; }
+
+    .itin-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .itin-subtitle {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 3px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .itin-pills {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .itin-pill {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.02em;
+    }
+    .itin-pill-blue   { background: rgba(88,166,255,0.15);  color: #7ec8ff; border: 1px solid rgba(88,166,255,0.3); }
+    .itin-pill-green  { background: rgba(63,185,80,0.15);   color: #6fdd85; border: 1px solid rgba(63,185,80,0.3); }
+    .itin-pill-purple { background: rgba(165,140,255,0.15); color: #c4adff; border: 1px solid rgba(165,140,255,0.3); }
+
+    /* ── Day grid ────────────────────────────────── */
+    .itin-days {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Base day card */
+    .itin-day {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      background: var(--bg-surface);
+    }
+    .itin-day:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+
+    /* Per-day colour accents */
+    .itin-day-0 { border-color: rgba(47,129,247,0.3);  }
+    .itin-day-1 { border-color: rgba(63,185,80,0.3);   }
+    .itin-day-2 { border-color: rgba(168,127,255,0.3); }
+    .itin-day-3 { border-color: rgba(255,154,60,0.3);  }
+    .itin-day-4 { border-color: rgba(255,100,132,0.3); }
+    .itin-day-5 { border-color: rgba(45,212,191,0.3);  }
+    .itin-day-6 { border-color: rgba(251,191,36,0.3);  }
+
+    /* Day card header strip */
+    .itin-day-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    .itin-day-0 .itin-day-header { background: linear-gradient(90deg,rgba(47,129,247,0.14),rgba(47,129,247,0.03)); }
+    .itin-day-1 .itin-day-header { background: linear-gradient(90deg,rgba(63,185,80,0.14),rgba(63,185,80,0.03)); }
+    .itin-day-2 .itin-day-header { background: linear-gradient(90deg,rgba(168,127,255,0.14),rgba(168,127,255,0.03)); }
+    .itin-day-3 .itin-day-header { background: linear-gradient(90deg,rgba(255,154,60,0.14),rgba(255,154,60,0.03)); }
+    .itin-day-4 .itin-day-header { background: linear-gradient(90deg,rgba(255,100,132,0.14),rgba(255,100,132,0.03)); }
+    .itin-day-5 .itin-day-header { background: linear-gradient(90deg,rgba(45,212,191,0.14),rgba(45,212,191,0.03)); }
+    .itin-day-6 .itin-day-header { background: linear-gradient(90deg,rgba(251,191,36,0.14),rgba(251,191,36,0.03)); }
+    .itin-day-header:hover { filter: brightness(1.1); }
+
+    /* Day number badge */
+    .itin-day-num {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 800;
+      color: #fff; flex-shrink: 0;
+      font-family: var(--font-mono);
+      letter-spacing: -0.02em;
+    }
+    .itin-day-0 .itin-day-num { background: linear-gradient(135deg,#2f81f7,#1050bf); box-shadow:0 3px 12px rgba(47,129,247,0.45); }
+    .itin-day-1 .itin-day-num { background: linear-gradient(135deg,#3fb950,#1e7a2e); box-shadow:0 3px 12px rgba(63,185,80,0.45); }
+    .itin-day-2 .itin-day-num { background: linear-gradient(135deg,#a87fff,#6040c0); box-shadow:0 3px 12px rgba(168,127,255,0.45); }
+    .itin-day-3 .itin-day-num { background: linear-gradient(135deg,#ff9a3c,#c85a08); box-shadow:0 3px 12px rgba(255,154,60,0.45); }
+    .itin-day-4 .itin-day-num { background: linear-gradient(135deg,#ff6484,#b81840); box-shadow:0 3px 12px rgba(255,100,132,0.45); }
+    .itin-day-5 .itin-day-num { background: linear-gradient(135deg,#2dd4bf,#0d8c80); box-shadow:0 3px 12px rgba(45,212,191,0.45); }
+    .itin-day-6 .itin-day-num { background: linear-gradient(135deg,#fbbf24,#a06010); box-shadow:0 3px 12px rgba(251,191,36,0.45); }
+
+    .itin-day-info { flex: 1; min-width: 0; }
+
+    .itin-day-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.55;
+      margin-bottom: 1px;
+    }
+
+    .itin-day-title {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .itin-day-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .itin-day-chevron {
+      width: 22px; height: 22px;
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.05);
+      color: var(--text-muted);
+      font-size: 9px;
+      transition: transform 0.22s ease, background 0.15s;
+      flex-shrink: 0;
+    }
+    .itin-day-header:hover .itin-day-chevron { background: rgba(255,255,255,0.1); }
+    .itin-day.open .itin-day-chevron { transform: rotate(180deg); }
+
+    /* Day body */
+    .itin-day-body {
+      display: none;
+      padding: 10px 12px 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.15);
+    }
+    .itin-day.open .itin-day-body { display: block; }
+
+    /* Section labels */
+    .itin-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
+      margin: 8px 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .itin-section-label::before {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+      order: 2;
+    }
+    .itin-section-label:first-child { margin-top: 0; }
+
+    /* Activity row */
+    .itin-activity {
+      display: flex;
+      gap: 8px;
+      padding: 7px 10px;
+      margin-bottom: 4px;
+      border-radius: 7px;
+      align-items: flex-start;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.15s, border-color 0.15s;
+      background: rgba(255,255,255,0.025);
+    }
+    .itin-activity:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.09);
+    }
+    .itin-activity:last-child { margin-bottom: 0; }
+
+    /* Coloured left accent bar */
+    .itin-activity-accent {
+      width: 2px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      align-self: stretch;
+      min-height: 14px;
+    }
+    .itin-day-0 .itin-activity-accent { background: #2f81f7; }
+    .itin-day-1 .itin-activity-accent { background: #3fb950; }
+    .itin-day-2 .itin-activity-accent { background: #a87fff; }
+    .itin-day-3 .itin-activity-accent { background: #ff9a3c; }
+    .itin-day-4 .itin-activity-accent { background: #ff6484; }
+    .itin-day-5 .itin-activity-accent { background: #2dd4bf; }
+    .itin-day-6 .itin-activity-accent { background: #fbbf24; }
+
+    .itin-activity-content { flex: 1; min-width: 0; }
+
+    .itin-activity-text {
+      font-size: 12px;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .itin-act-line {
+      padding: 2px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .itin-act-line:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .itin-activity-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 3px;
+    }
+
+    .itin-activity-tag {
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 20px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .tag-food    { background: rgba(235,100,52,0.15);  color: #ff8c5a; border: 1px solid rgba(235,100,52,0.3); }
+    .tag-stay    { background: rgba(88,166,255,0.12);  color: #7ec8ff; border: 1px solid rgba(88,166,255,0.25); }
+    .tag-visit   { background: rgba(63,185,80,0.12);   color: #6fdd85; border: 1px solid rgba(63,185,80,0.25); }
+    .tag-travel  { background: rgba(165,140,255,0.12); color: #c4adff; border: 1px solid rgba(165,140,255,0.25); }
+    .tag-tip     { background: rgba(251,191,36,0.12);  color: #fcd34d; border: 1px solid rgba(251,191,36,0.25); }
+    .tag-time    { background: rgba(100,100,100,0.15); color: var(--text-secondary); border: 1px solid rgba(255,255,255,0.1); }
+
+    /* Footer stats bar */
+    .itin-footer {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .itin-footer-item {
+      flex: 1;
+      min-width: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 8px;
+      background: rgba(255,255,255,0.025);
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.15s;
+    }
+    .itin-footer-item:last-child { border-right: none; }
+    .itin-footer-item:hover { background: rgba(255,255,255,0.05); }
+
+    .itin-footer-icon { font-size: 14px; margin-bottom: 3px; }
+    .itin-footer-val  { font-size: 13px; font-weight: 700; color: var(--text-primary); line-height: 1; }
+    .itin-footer-label{ font-size: 9px; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.06em; }
+
     /* ── Mobile sidebar toggle ─────────────────── */
     #mobile-toggle {
       display: none;
@@ -870,9 +1281,14 @@
   };
 
   // ── State ────────────────────────────────────────────────────────────────
-  let sessionId    = null;
-  let isLoading    = false;
-  let activeMode   = null;   // e.g. "research", "coding", etc.
+  let sessionId       = null;
+  let isLoading       = false;
+  let activeMode      = null;
+  let currentConvId   = null;  // ID of the conversation being viewed
+
+  // Conversation store — keyed by convId
+  // { convId: { sessionId, title, messages: [{role, html, text}] } }
+  const convStore = {};
 
   // ── DOM refs ─────────────────────────────────────────────────────────────
   const chatArea        = document.getElementById("chat-area");
@@ -939,6 +1355,11 @@
   }
   bindSuggestionCards();
 
+  // ── Initialise first conversation slot on page load ───────────────────────
+  const _initConvId = `conv-${Date.now()}`;
+  currentConvId = _initConvId;
+  convStore[_initConvId] = { sessionId: null, title: null, messages: [] };
+
   // ── Input auto-resize ────────────────────────────────────────────────────
   inputBox.addEventListener("input", () => {
     inputBox.style.height = "auto";
@@ -997,8 +1418,13 @@
       sessionId = data.session_id;
       sessionLabel.textContent = `Session: ${sessionId.slice(0, 8)}…`;
 
+      // Keep store in sync with the real session ID from backend
+      if (currentConvId && convStore[currentConvId]) {
+        convStore[currentConvId].sessionId = sessionId;
+      }
+
       hideTyping();
-      appendBotMessage(data.answer, data.trace || []);
+      appendBotMessage(data.answer, data.trace || [], data.run_id || null);
       addToHistory(rawMsg);
 
     } catch (err) {
@@ -1016,9 +1442,7 @@
     const modeBadge = mode
       ? `<span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:rgba(88,166,255,0.1);color:${AGENT_MODES[mode].color};border:1px solid ${AGENT_MODES[mode].color}33;margin-right:6px;">${AGENT_MODES[mode].label}</span>`
       : "";
-    const wrapper = document.createElement("div");
-    wrapper.className = "message-wrapper";
-    wrapper.innerHTML = `
+    const html = `
       <div class="message-row user">
         <div class="msg-meta" style="justify-content:flex-end">
           ${modeBadge}<span class="msg-name">You</span>
@@ -1028,33 +1452,258 @@
           <div class="msg-text">${escHtml(text)}</div>
         </div>
       </div>`;
+    const wrapper = document.createElement("div");
+    wrapper.className = "message-wrapper";
+    wrapper.innerHTML = html;
     chatArea.appendChild(wrapper);
+
+    // Save to store
+    if (currentConvId && convStore[currentConvId]) {
+      convStore[currentConvId].messages.push({ role: "user", html });
+    }
     scrollToBottom();
   }
 
-  function appendBotMessage(text, trace) {
+  function appendBotMessage(text, trace, runId) {
     const wrapper = document.createElement("div");
     wrapper.className = "message-wrapper";
     const traceHtml = buildTraceHtml(trace);
-    const formattedText = formatMarkdown(text);
-    wrapper.innerHTML = `
+
+    // Detect and render itinerary as cards, else normal markdown
+    const itinHtml = isItinerary(text) ? renderItinerary(text) : null;
+    const contentHtml = itinHtml || formatMarkdown(text);
+
+    const langsmithHtml = runId
+      ? `<a class="langsmith-link"
+            href="https://smith.langchain.com/runs/${runId}"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View this run in LangSmith">
+            <span class="ls-dot"></span>View in LangSmith
+         </a>`
+      : "";
+
+    const html = `
       <div class="message-row bot">
         <div class="msg-meta">
           <div class="msg-avatar bot-av">🤖</div>
           <span class="msg-name">MultiAgentBot</span>
         </div>
         <div class="msg-bubble">
-          <div class="msg-text">${formattedText}</div>
+          <div class="msg-text">${contentHtml}</div>
           ${trace.length ? `
             <button class="trace-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'flex':'none'; this.textContent=(this.textContent.trim().startsWith('▶')?'▼ Hide':'▶ Show')+' agent trace'">
               ▶ Show agent trace
             </button>
             <div class="trace-bar" style="display:none">${traceHtml}</div>
           ` : ""}
+          ${langsmithHtml}
         </div>
       </div>`;
+
+    wrapper.innerHTML = html;
     chatArea.appendChild(wrapper);
+
+    // Save to store
+    if (currentConvId && convStore[currentConvId]) {
+      convStore[currentConvId].messages.push({ role: "bot", html });
+    }
     scrollToBottom();
+  }
+
+  // ── Itinerary card renderer ───────────────────────────────────────────────
+  function isItinerary(text) {
+    return /day\s*[1-9]/i.test(text) && (
+      /itinerary|trip|travel|visit|tour|plan/i.test(text) ||
+      (text.match(/day\s*[1-9]/gi) || []).length >= 2
+    );
+  }
+
+  function parseItinerary(text) {
+    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+    const days = [];
+    let currentDay = null;
+    let currentSection = null;
+    let destination = "";
+    let totalDays = 0;
+
+    const destMatch = text.match(/(?:trip to|itinerary for|visiting|travel to|guide to)\s+([A-Z][a-zA-Z\s,]+?)(?:\n|:|\.)/i);
+    if (destMatch) destination = destMatch[1].trim();
+
+    const sectionKeywords = /^(morning|afternoon|evening|night|day|stay|hotel|local tip|tip|note)[\s:]/i;
+
+    for (const line of lines) {
+      // Skip budget summary block entirely
+      if (/---BUDGET SUMMARY---|---END BUDGET SUMMARY---/i.test(line)) continue;
+      if (/^(Total Budget|Accommodation|Food|Transport|Activities|Miscellaneous|Total Estimated|Remaining Budget):/i.test(line)) continue;
+      // Skip budget warning/status lines
+      if (/⚠️|✅|over budget|buffer remaining|remaining budget/i.test(line)) continue;
+      // Skip bold budget breakdown lines like **Budget Breakdown**
+      if (/\*\*Budget|budget breakdown/i.test(line)) continue;
+
+      const dayMatch = line.match(/^(?:\*\*)?day\s*([1-9][0-9]?)(?:\s*[:\-–—]\s*|\*\*:?\s*)(.*)$/i);
+      if (dayMatch) {
+        if (currentDay) days.push(currentDay);
+        const dayNum = parseInt(dayMatch[1]);
+        const dayTitle = dayMatch[2].replace(/\*\*/g, "").trim() || `Day ${dayNum}`;
+        currentDay = { num: dayNum, title: dayTitle, sections: {}, activities: [] };
+        currentSection = null;
+        totalDays = Math.max(totalDays, dayNum);
+        continue;
+      }
+
+      if (!currentDay) {
+        if (!destination && line.length < 70 && !/^[-•*]/.test(line)) {
+          const isJunk = /[₹$€£¥]|budget|spend|remaining|total|⚠️|✅|\d{4,}/i.test(line);
+          if (!isJunk) {
+            destination = line.replace(/\*\*/g, "").replace(/itinerary for/i, "").trim();
+          }
+        }
+        continue;
+      }
+
+      // Detect section headers like "Morning:", "Afternoon:", "Evening:", "Stay:", "Local Tip:"
+      const secMatch = line.match(/^(?:\*\*)?(morning|afternoon|evening|night|stay|hotel|local tip|tip|note)[\s:*]+(.*)/i);
+      if (secMatch) {
+        currentSection = secMatch[1].toLowerCase().replace("local tip", "tip").replace("hotel", "stay");
+        const content = secMatch[2].replace(/\*\*/g, "").trim();
+        if (!currentDay.sections[currentSection]) currentDay.sections[currentSection] = [];
+        if (content) currentDay.sections[currentSection].push(content);
+        continue;
+      }
+
+      // Regular activity line
+      const clean = line.replace(/^[-•*]\s+/, "").replace(/\*\*/g, "").trim();
+      if (clean.length > 4) {
+        if (currentSection && currentDay.sections[currentSection] !== undefined) {
+          currentDay.sections[currentSection].push(clean);
+        } else {
+          currentDay.activities.push(clean);
+        }
+      }
+    }
+    if (currentDay) days.push(currentDay);
+    return { days, destination, totalDays };
+  }
+
+  function getTag(text) {
+    const t = text.toLowerCase();
+    if (/breakfast|lunch|dinner|eat|food|restaurant|cafe|cuisine|meal|snack|taste|dish/.test(t))
+      return `<span class="itin-activity-tag tag-food">🍽 Food</span>`;
+    if (/hotel|stay|check.in|check.out|accommodation|resort|hostel|lodge|sleep|room/.test(t))
+      return `<span class="itin-activity-tag tag-stay">🏨 Stay</span>`;
+    if (/airport|flight|train|bus|taxi|transfer|arrive|depart|transit|cab|auto|metro/.test(t))
+      return `<span class="itin-activity-tag tag-travel">✈ Travel</span>`;
+    if (/tip|note|recommend|best time|avoid|wear|bring|carry|budget|cost|price|book/.test(t))
+      return `<span class="itin-activity-tag tag-tip">💡 Tip</span>`;
+    if (/visit|explore|museum|temple|beach|park|market|walk|tour|see|view|fort|palace|lake/.test(t))
+      return `<span class="itin-activity-tag tag-visit">📍 Visit</span>`;
+    return "";
+  }
+
+  const SECTION_ICONS = {
+    morning: "🌅", afternoon: "☀️", evening: "🌆",
+    night: "🌙", stay: "🏨", tip: "💡", note: "📝"
+  };
+
+  function renderActivitiesForSection(acts, dayColorIdx) {
+    if (!acts || acts.length === 0) return "";
+    // All lines in a section → ONE card with bullet lines inside
+    const allTags = [...new Set(acts.map(a => getTag(a)).filter(Boolean))].join(" ");
+    const lines = acts.map(a => `<div class="itin-act-line">${escHtml(a)}</div>`).join("");
+    return `
+      <div class="itin-activity">
+        <div class="itin-activity-accent"></div>
+        <div class="itin-activity-content">
+          <div class="itin-activity-text">${lines}</div>
+          ${allTags ? `<div class="itin-activity-tags">${allTags}</div>` : ""}
+        </div>
+      </div>`;
+  }
+
+  function renderItinerary(text) {
+    const { days, destination, totalDays } = parseItinerary(text);
+    if (days.length < 2) return null;
+
+    const dest = destination || "Your Destination";
+    const dayCount = totalDays || days.length;
+    const totalActivities = days.reduce((a, d) => {
+      return a + d.activities.length + Object.values(d.sections).reduce((s, arr) => s + arr.length, 0);
+    }, 0);
+
+    const daysHtml = days.map((day, idx) => {
+      const colorIdx = idx % 7;
+      const hasSections = Object.keys(day.sections).length > 0;
+
+      let bodyHtml = "";
+      if (hasSections) {
+        const sectionOrder = ["morning", "afternoon", "evening", "night", "stay", "tip", "note"];
+        sectionOrder.forEach(sec => {
+          if (day.sections[sec] && day.sections[sec].length > 0) {
+            const icon = SECTION_ICONS[sec] || "•";
+            const label = sec.charAt(0).toUpperCase() + sec.slice(1);
+            bodyHtml += `<div class="itin-section-label">${icon} ${label}</div>`;
+            bodyHtml += renderActivitiesForSection(day.sections[sec], colorIdx);
+          }
+        });
+        // Any uncategorised sections
+        Object.keys(day.sections).forEach(sec => {
+          if (!sectionOrder.includes(sec) && day.sections[sec].length > 0) {
+            bodyHtml += `<div class="itin-section-label">• ${sec}</div>`;
+            bodyHtml += renderActivitiesForSection(day.sections[sec], colorIdx);
+          }
+        });
+      }
+      // Fallback activities
+      if (day.activities.length > 0) {
+        if (hasSections) bodyHtml += `<div class="itin-section-label">📋 More</div>`;
+        bodyHtml += renderActivitiesForSection(day.activities, colorIdx);
+      }
+      if (!bodyHtml) {
+        bodyHtml = `<div class="itin-activity">
+          <div class="itin-activity-accent"></div>
+          <div class="itin-activity-content"><div class="itin-activity-text">Free day — explore at your own pace</div></div>
+        </div>`;
+      }
+
+      const actCount = day.activities.length + Object.values(day.sections).reduce((s, a) => s + a.length, 0);
+
+      return `
+        <div class="itin-day itin-day-${colorIdx} ${idx === 0 ? 'open' : ''}" id="itin-day-${idx}">
+          <div class="itin-day-header" onclick="toggleItinDay('itin-day-${idx}')">
+            <div class="itin-day-num">${day.num}</div>
+            <div class="itin-day-info">
+              <div class="itin-day-label">Day ${day.num}</div>
+              <div class="itin-day-title">${escHtml(day.title || 'Day ' + day.num)}</div>
+              <div class="itin-day-meta">${actCount} activities · ${hasSections ? Object.keys(day.sections).length + ' sessions' : 'tap to expand'}</div>
+            </div>
+            <div class="itin-day-chevron">▼</div>
+          </div>
+          <div class="itin-day-body">${bodyHtml}</div>
+        </div>`;
+    }).join("");
+
+    return `
+      <div class="itinerary-wrapper">
+        <div class="itin-header">
+          <div class="itin-header-icon">✈️</div>
+          <div class="itin-header-body">
+            <div class="itin-title">${escHtml(dest)}</div>
+            <div class="itin-subtitle">Personalized Travel Itinerary</div>
+            <div class="itin-pills">
+              <span class="itin-pill itin-pill-blue">📅 ${dayCount} Days</span>
+              <span class="itin-pill itin-pill-green">🎯 ${totalActivities} Activities</span>
+              <span class="itin-pill itin-pill-purple">✨ AI Planned</span>
+            </div>
+          </div>
+        </div>
+        <div class="itin-days">${daysHtml}</div>
+      </div>`;
+  }
+
+  function toggleItinDay(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("open");
   }
 
   function buildTraceHtml(trace) {
@@ -1065,20 +1714,75 @@
       else if (t.includes("supervisor") || t.includes("dispatcher")) cls = "t-supervisor";
       else if (t.includes("critic") || t.includes("formatter")) cls = "t-critic";
       else if (t.includes("agent") || t.includes("travel") || t.includes("budget") || t.includes("general") || t.includes("coding") || t.includes("research")) cls = "t-agent";
+
+      // Split "node_name · 123ms" into label + timing badge
+      const timingMatch = t.match(/^(.*?)\s*·\s*(\d+ms)$/);
+      if (timingMatch) {
+        const label = timingMatch[1].trim();
+        const timing = timingMatch[2];
+        return `<span class="trace-pill ${cls}">${escHtml(label)}<span class="trace-timing">${timing}</span></span>`;
+      }
       return `<span class="trace-pill ${cls}">${escHtml(t)}</span>`;
     }).join("");
   }
 
-  // ── Minimal markdown formatter ───────────────────────────────────────────
+  // ── Markdown formatter ───────────────────────────────────────────────────
   function formatMarkdown(text) {
     let h = escHtml(text);
-    h = h.replace(/```([\s\S]*?)```/g, (_, c) => `<pre><code>${c.trim()}</code></pre>`);
+
+    // ── Code blocks first (protect their content from other replacements) ──
+    const codeBlocks = [];
+    h = h.replace(/```[\s\S]*?```/g, match => {
+      const inner = match.replace(/^```[^\n]*\n?/, "").replace(/```$/, "").trim();
+      codeBlocks.push(`<pre><code>${inner}</code></pre>`);
+      return `%%CODE_BLOCK_${codeBlocks.length - 1}%%`;
+    });
+
+    // ── Inline code ────────────────────────────────────────────────────────
     h = h.replace(/`([^`]+)`/g, (_, c) => `<code>${c}</code>`);
-    h = h.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-    h = h.replace(/\*(.+?)\*/g, "<em>$1</em>");
-    h = h.replace(/^[-•]\s+(.+)$/gm, "<li>$1</li>");
-    h = h.replace(/(<li>[\s\S]*?<\/li>)/g, "<ul>$1</ul>");
+
+    // ── Headings (must come before bold/newline replacements) ──────────────
+    h = h.replace(/^######\s+(.+)$/gm, "<h5>$1</h5>");
+    h = h.replace(/^#####\s+(.+)$/gm,  "<h5>$1</h5>");
+    h = h.replace(/^####\s+(.+)$/gm,   "<h4>$1</h4>");
+    h = h.replace(/^###\s+(.+)$/gm,    "<h3>$1</h3>");
+    h = h.replace(/^##\s+(.+)$/gm,     "<h2>$1</h2>");
+    h = h.replace(/^#\s+(.+)$/gm,      "<h1>$1</h1>");
+
+    // ── Horizontal rule ────────────────────────────────────────────────────
+    h = h.replace(/^---+$/gm, "<hr>");
+
+    // ── Bold and italic ────────────────────────────────────────────────────
+    h = h.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>");
+    h = h.replace(/\*\*(.+?)\*\*/g,     "<strong>$1</strong>");
+    h = h.replace(/\*(.+?)\*/g,         "<em>$1</em>");
+
+    // ── Bullet lists ───────────────────────────────────────────────────────
+    h = h.replace(/^[-•*]\s+(.+)$/gm, "<li>$1</li>");
+    h = h.replace(/(<li>.*<\/li>(\n|<br>)?)+/g, match => `<ul>${match}</ul>`);
+
+    // ── Paragraphs: double newline → paragraph break ───────────────────────
+    h = h.replace(/\n{2,}/g, "</p><p>");
+    h = "<p>" + h + "</p>";
+
+    // ── Single newlines → line break ───────────────────────────────────────
     h = h.replace(/\n/g, "<br>");
+
+    // ── Clean up empty paragraphs ──────────────────────────────────────────
+    h = h.replace(/<p>\s*<\/p>/g, "");
+    h = h.replace(/<p>(<h[1-5]>)/g, "$1");
+    h = h.replace(/(<\/h[1-5]>)<\/p>/g, "$1");
+    h = h.replace(/<p>(<ul>)/g, "$1");
+    h = h.replace(/(<\/ul>)<\/p>/g, "$1");
+    h = h.replace(/<p>(<hr>)<\/p>/g, "$1");
+    h = h.replace(/<p>(<pre>)/g, "$1");
+    h = h.replace(/(<\/pre>)<\/p>/g, "$1");
+
+    // ── Restore code blocks ────────────────────────────────────────────────
+    codeBlocks.forEach((block, i) => {
+      h = h.replace(`%%CODE_BLOCK_${i}%%`, block);
+    });
+
     return h;
   }
 
@@ -1106,22 +1810,73 @@
   }
 
   function addToHistory(msg) {
+    // Update the title of current conversation to first message
+    if (currentConvId && convStore[currentConvId]) {
+      if (!convStore[currentConvId].title) {
+        convStore[currentConvId].title = msg;
+      }
+    }
+
+    // Only add sidebar item once per conversation
+    const existing = document.getElementById(`hist-${currentConvId}`);
+    if (existing) return;
+
+    // Capture convId NOW by value — not by reference to currentConvId
+    const convId = currentConvId;
+
     const li = document.createElement("li");
     li.className = "history-item active";
-    historyList.querySelectorAll(".history-item").forEach(i => i.classList.remove("active"));
+    li.id = `hist-${convId}`;
+    const label = msg.slice(0, 38) + (msg.length > 38 ? "…" : "");
     li.innerHTML = `
       <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
-      <span class="hist-text">${escHtml(msg.slice(0, 38))}${msg.length > 38 ? "…" : ""}</span>`;
-    li.addEventListener("click", () => {
-      historyList.querySelectorAll(".history-item").forEach(i => i.classList.remove("active"));
-      li.classList.add("active");
-    });
+      <span class="hist-text">${escHtml(label)}</span>`;
+
+    // convId is now a const local — always refers to this conversation
+    li.addEventListener("click", () => loadConversation(convId, li));
+
+    historyList.querySelectorAll(".history-item").forEach(i => i.classList.remove("active"));
     historyList.prepend(li);
   }
 
+  function loadConversation(convId, li) {
+    const conv = convStore[convId];
+    if (!conv) return;
+
+    // Save current chat area HTML before switching (already saved per-message)
+    // Switch state
+    sessionId      = conv.sessionId;
+    currentConvId  = convId;
+    activeMode     = null;
+    clearMode();
+
+    // Update session label
+    sessionLabel.textContent = `Session: ${sessionId ? sessionId.slice(0, 8) + "…" : "restored"}`;
+
+    // Rebuild chat area from stored messages
+    chatArea.innerHTML = "";
+    conv.messages.forEach(m => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "message-wrapper";
+      wrapper.innerHTML = m.html;
+      chatArea.appendChild(wrapper);
+    });
+
+    // Highlight correct sidebar item
+    historyList.querySelectorAll(".history-item").forEach(i => i.classList.remove("active"));
+    if (li) li.classList.add("active");
+
+    scrollToBottom();
+  }
+
   function startNewChat() {
+    // Create a new conversation entry in the store
+    const convId = `conv-${Date.now()}`;
+    currentConvId = convId;
+    convStore[convId] = { sessionId: null, title: null, messages: [] };
+
     sessionId  = null;
     activeMode = null;
     sessionLabel.textContent = "No active session";
